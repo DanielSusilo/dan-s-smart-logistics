@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
-export type Role = "admin" | "bea-cukai" | null;
+export type Role = "admin" | "bea-cukai" | "customer" | null;
 
 interface WalletState {
   connected: boolean;

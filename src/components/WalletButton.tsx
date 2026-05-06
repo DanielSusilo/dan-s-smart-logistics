@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Wallet, ChevronDown, LogOut, Copy, Check, Shield, Anchor } from "lucide-react";
+import { Wallet, ChevronDown, LogOut, Copy, Check, Shield, Anchor, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,11 +26,11 @@ export function WalletButton() {
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
-  const handleConnect = async (r: "admin" | "bea-cukai") => {
+  const handleConnect = async (r: "admin" | "bea-cukai" | "customer") => {
     setOpen(false);
     await connect(r);
     toast.success("Wallet connected", { description: "Phantom-compatible signature verified." });
-    navigate(r === "admin" ? "/admin" : "/customs");
+    navigate(r === "admin" ? "/admin" : r === "bea-cukai" ? "/customs" : "/customer");
   };
 
   const handleCopy = () => {
@@ -52,7 +52,7 @@ export function WalletButton() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-64">
           <DropdownMenuLabel className="font-display">
-            Connected as <span className="text-primary">{role === "admin" ? "Admin" : "Bea Cukai"}</span>
+            Connected as <span className="text-primary">{role === "admin" ? "Admin" : role === "bea-cukai" ? "Bea Cukai" : "Customer"}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleCopy} className="gap-2">
@@ -121,6 +121,19 @@ export function WalletButton() {
                 <div className="text-sm text-muted-foreground">Verify and sign customs clearance on-chain.</div>
               </div>
               <ChevronDown className="h-4 w-4 -rotate-90 text-muted-foreground transition-smooth group-hover:translate-x-1 group-hover:text-success" />
+            </button>
+            <button
+              onClick={() => handleConnect("customer")}
+              className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 text-left transition-smooth hover:border-primary hover:shadow-glow"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <User className="h-5 w-5" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-foreground">Customer</div>
+                <div className="text-sm text-muted-foreground">Track your shipments and view on-chain proofs.</div>
+              </div>
+              <ChevronDown className="h-4 w-4 -rotate-90 text-muted-foreground transition-smooth group-hover:translate-x-1 group-hover:text-primary" />
             </button>
           </div>
           <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
