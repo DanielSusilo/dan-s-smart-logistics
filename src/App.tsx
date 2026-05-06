@@ -10,6 +10,7 @@ import ManageShipments from "./pages/admin/ManageShipments.tsx";
 import UserRegistry from "./pages/admin/UserRegistry.tsx";
 import PendingVerifications from "./pages/customs/PendingVerifications.tsx";
 import ClearedGoods from "./pages/customs/ClearedGoods.tsx";
+import CustomerPortal from "./pages/customer/CustomerPortal.tsx";
 import { WalletProvider } from "./context/WalletContext.tsx";
 import { ShipmentsProvider } from "./context/ShipmentsContext.tsx";
 import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/admin/registry" element={<ProtectedRoute allow="admin"><UserRegistry /></ProtectedRoute>} />
               <Route path="/customs" element={<ProtectedRoute allow="bea-cukai"><PendingVerifications /></ProtectedRoute>} />
               <Route path="/customs/cleared" element={<ProtectedRoute allow="bea-cukai"><ClearedGoods /></ProtectedRoute>} />
+              <Route path="/customer" element={<ProtectedRoute allow="customer"><CustomerPortal /></ProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
