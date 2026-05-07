@@ -27,6 +27,7 @@ import { BrandLogo } from "./BrandLogo";
 import { useWallet } from "@/context/WalletContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { NotificationBell } from "./NotificationBell";
 
 const adminNav = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard, end: true },
@@ -100,10 +101,10 @@ export function DashboardLayout({
                   <Anchor className="h-3.5 w-3.5 text-primary-foreground" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-mono text-[11px] text-sidebar-foreground">
+                  <div className="truncate font-mono text-[11px] text-sidebar-foreground/90">
                     {address}
                   </div>
-                  <div className="text-[10px] text-muted-foreground">
+                  <div className="text-[10px] text-sidebar-foreground/60">
                     {variant === "admin" ? "Admin" : "Bea Cukai"}
                   </div>
                 </div>
@@ -125,18 +126,21 @@ export function DashboardLayout({
                 )}
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                disconnect();
-                navigate("/");
-              }}
-              className="gap-2 text-muted-foreground hover:text-destructive"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Disconnect</span>
-            </Button>
+            <div className="flex items-center gap-1.5">
+              <NotificationBell />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  disconnect();
+                  navigate("/");
+                }}
+                className="gap-2 text-muted-foreground hover:text-destructive"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Keluar</span>
+              </Button>
+            </div>
           </header>
           <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
         </div>

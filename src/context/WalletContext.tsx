@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { useAuth } from "./AuthContext";
 
 export type Role = "admin" | "bea-cukai" | "customer" | null;
 
@@ -28,6 +29,20 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [address, setAddress] = useState<string | null>(null);
   const [role, setRole] = useState<Role>(null);
   const [connecting, setConnecting] = useState(false);
+  const { user, logout } = useAuth();
+
+  // Sync wallet state with authenticated user
+  useEffect(() => {
+    if (user) {
+      setAddress(user.walletAddress);
+      setRole(user.role);
+      setConnected(true);
+    } else {
+      setAddress(null);
+      setRole(null);
+      setConnected(false);
+    }
+  }, [user]);
 
   const connect = async (r: Exclude<Role, null>) => {
     setConnecting(true);
@@ -39,6 +54,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   };
 
   const disconnect = () => {
+    logout();
     setConnected(false);
     setAddress(null);
     setRole(null);

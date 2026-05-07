@@ -13,6 +13,9 @@ import ClearedGoods from "./pages/customs/ClearedGoods.tsx";
 import CustomerPortal from "./pages/customer/CustomerPortal.tsx";
 import { WalletProvider } from "./context/WalletContext.tsx";
 import { ShipmentsProvider } from "./context/ShipmentsContext.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
+import { NotificationsProvider } from "./context/NotificationsContext.tsx";
+import Auth from "./pages/Auth.tsx";
 import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
 
 const queryClient = new QueryClient();
@@ -23,10 +26,13 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <WalletProvider>
-          <ShipmentsProvider>
+        <AuthProvider>
+          <WalletProvider>
+            <NotificationsProvider>
+            <ShipmentsProvider>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<ProtectedRoute allow="admin"><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/shipments" element={<ProtectedRoute allow="admin"><ManageShipments /></ProtectedRoute>} />
               <Route path="/admin/registry" element={<ProtectedRoute allow="admin"><UserRegistry /></ProtectedRoute>} />
@@ -36,8 +42,10 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </ShipmentsProvider>
-        </WalletProvider>
+            </ShipmentsProvider>
+            </NotificationsProvider>
+          </WalletProvider>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -14,9 +14,11 @@ import {
 import { useShipments } from "@/context/ShipmentsContext";
 import { Shipment } from "@/lib/mock-data";
 import { toast } from "sonner";
+import { useNotifications } from "@/context/NotificationsContext";
 
 export default function PendingVerifications() {
   const { shipments, approveCustoms, rejectCustoms } = useShipments();
+  const { push } = useNotifications();
   const [active, setActive] = useState<Shipment | null>(null);
   const [signing, setSigning] = useState(false);
 
@@ -29,6 +31,12 @@ export default function PendingVerifications() {
     setSigning(true);
     await new Promise((r) => setTimeout(r, 1300));
     approveCustoms(active.id);
+    push({
+      type: "success",
+      title: "Customs cleared",
+      message: `${active.id} — ${active.itemName} berhasil ditandatangani Bea Cukai.`,
+      shipmentId: active.id,
+    });
     setSigning(false);
     setActive(null);
     toast.success("Customs cleared", { description: "Signature broadcast to mainnet." });
@@ -37,6 +45,12 @@ export default function PendingVerifications() {
   const handleReject = () => {
     if (!active) return;
     rejectCustoms(active.id);
+    push({
+      type: "error",
+      title: "Shipment ditolak",
+      message: `${active.id} ditolak oleh Bea Cukai dan dikembalikan ke antrian.`,
+      shipmentId: active.id,
+    });
     setActive(null);
     toast.error("Shipment rejected");
   };

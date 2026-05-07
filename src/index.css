@@ -64,14 +64,15 @@ All colors MUST be HSL.
 
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 222 30% 22%;
-    --sidebar-primary: 222 60% 16%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 94%;
-    --sidebar-accent-foreground: 222 47% 16%;
-    --sidebar-border: 215 20% 90%;
-    --sidebar-ring: 222 60% 22%;
+    /* Sidebar — deep navy for clear contrast */
+    --sidebar-background: 222 60% 11%;
+    --sidebar-foreground: 210 30% 88%;
+    --sidebar-primary: 152 68% 42%;
+    --sidebar-primary-foreground: 222 60% 8%;
+    --sidebar-accent: 222 50% 18%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 40% 20%;
+    --sidebar-ring: 152 68% 42%;
   }
 
   .dark {

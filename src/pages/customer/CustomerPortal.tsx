@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/BrandLogo";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ShipmentTimeline } from "@/components/ShipmentTimeline";
+import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
 
 export default function CustomerPortal() {
@@ -56,6 +57,7 @@ export default function CustomerPortal() {
               </div>
               <span className="font-mono text-xs text-muted-foreground">{address}</span>
             </div>
+            <NotificationBell />
             <Button
               variant="ghost"
               size="sm"
@@ -66,7 +68,7 @@ export default function CustomerPortal() {
               className="gap-2 text-muted-foreground hover:text-destructive"
             >
               <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Disconnect</span>
+              <span className="hidden sm:inline">Keluar</span>
             </Button>
           </div>
         </div>
