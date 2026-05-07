@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Search,
   ShieldCheck,
@@ -8,6 +8,8 @@ import {
   ArrowRight,
   Sparkles,
   Globe2,
+  MapPin,
+  Package,
 } from "lucide-react";
 import { TopNav } from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
@@ -21,21 +23,46 @@ const Index = () => {
   const { getById, shipments } = useShipments();
   const [query, setQuery] = useState("");
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [showSuggest, setShowSuggest] = useState(false);
 
   const result = activeId ? getById(activeId) : null;
+
+  const suggestions = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return shipments
+      .filter(
+        (s) =>
+          s.id.toLowerCase().includes(q) ||
+          s.itemName.toLowerCase().includes(q) ||
+          s.supplier.toLowerCase().includes(q) ||
+          s.origin.toLowerCase().includes(q) ||
+          s.destination.toLowerCase().includes(q) ||
+          s.hsCode.toLowerCase().includes(q),
+      )
+      .slice(0, 5);
+  }, [query, shipments]);
+
+  const select = (id: string) => {
+    setActiveId(id);
+    setQuery(id);
+    setShowSuggest(false);
+    setTimeout(() => {
+      document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
     if (!q) return;
-    const found = getById(q);
+    const found = getById(q) ?? suggestions[0];
     if (found) {
-      setActiveId(found.id);
-      setTimeout(() => {
-        document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 50);
+      select(found.id);
     } else {
-      toast.error("Item not found", { description: `No shipment matches "${q}". Try DSL-8829.` });
+      toast.error("Item tidak ditemukan", {
+        description: `Tidak ada shipment yang cocok dengan "${q}". Coba DSL-8829, "Coffee", atau "Cipta".`,
+      });
     }
   };
 
