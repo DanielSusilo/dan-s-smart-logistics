@@ -126,19 +126,21 @@ export function DashboardLayout({
                 )}
               </div>
             </div>
-            <NotificationBell />
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                disconnect();
-                navigate("/");
-              }}
-              className="gap-2 text-muted-foreground hover:text-destructive"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Disconnect</span>
-            </Button>
+            <div className="flex items-center gap-1.5">
+              <NotificationBell />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  disconnect();
+                  navigate("/");
+                }}
+                className="gap-2 text-muted-foreground hover:text-destructive"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Keluar</span>
+              </Button>
+            </div>
           </header>
           <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
         </div>
