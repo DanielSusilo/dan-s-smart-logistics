@@ -126,6 +126,7 @@ export function DashboardLayout({
                 )}
               </div>
             </div>
+            <NotificationBell />
             <Button
               variant="ghost"
               size="sm"
