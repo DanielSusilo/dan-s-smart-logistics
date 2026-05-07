@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Wallet, ChevronDown, LogOut, Copy, Check, Shield, Anchor, User } from "lucide-react";
+import { Wallet, ChevronDown, LogOut, Copy, Check, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,28 +10,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useWallet } from "@/context/WalletContext";
 import { toast } from "sonner";
 
 export function WalletButton() {
-  const { connected, address, role, connect, disconnect, connecting } = useWallet();
-  const [open, setOpen] = useState(false);
+  const { connected, address, role, disconnect } = useWallet();
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
-  const handleConnect = async (r: "admin" | "bea-cukai" | "customer") => {
-    setOpen(false);
-    await connect(r);
-    toast.success("Wallet connected", { description: "Phantom-compatible signature verified." });
-    navigate(r === "admin" ? "/admin" : r === "bea-cukai" ? "/customs" : "/customer");
-  };
+  const dashRoute = role === "admin" ? "/admin" : role === "bea-cukai" ? "/customs" : "/customer";
 
   const handleCopy = () => {
     if (!address) return;
@@ -55,6 +42,9 @@ export function WalletButton() {
             Connected as <span className="text-primary">{role === "admin" ? "Admin" : role === "bea-cukai" ? "Bea Cukai" : "Customer"}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => navigate(dashRoute)} className="gap-2">
+            <LayoutDashboard className="h-4 w-4" /> Dashboard
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={handleCopy} className="gap-2">
             {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
             <span className="font-mono text-xs">{address}</span>
@@ -64,12 +54,12 @@ export function WalletButton() {
             onClick={() => {
               disconnect();
               navigate("/");
-              toast("Wallet disconnected");
+              toast("Wallet terputus");
             }}
             className="gap-2 text-destructive focus:text-destructive"
           >
             <LogOut className="h-4 w-4" />
-            Disconnect
+            Keluar
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -77,70 +67,17 @@ export function WalletButton() {
   }
 
   return (
-    <>
+    <div className="flex items-center gap-2">
+      <Button variant="ghost" size="sm" onClick={() => navigate("/auth?mode=login")} className="hidden sm:inline-flex">
+        Masuk
+      </Button>
       <Button
-        onClick={() => setOpen(true)}
-        disabled={connecting}
+        onClick={() => navigate("/auth?mode=register")}
         className="gap-2 bg-gradient-primary shadow-glow transition-smooth hover:shadow-elegant"
       >
         <Wallet className="h-4 w-4" />
-        {connecting ? "Connecting…" : "Connect Wallet"}
+        Daftar / Login
       </Button>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-display text-2xl">Connect your wallet</DialogTitle>
-            <DialogDescription>
-              Select the role you want to authenticate as. In production, your role is derived from your wallet's on-chain registry entry.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-3 pt-2">
-            <button
-              onClick={() => handleConnect("admin")}
-              className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 text-left transition-smooth hover:border-primary hover:shadow-glow"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Shield className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <div className="font-semibold text-foreground">Admin</div>
-                <div className="text-sm text-muted-foreground">Manage shipments, registry, and operations.</div>
-              </div>
-              <ChevronDown className="h-4 w-4 -rotate-90 text-muted-foreground transition-smooth group-hover:translate-x-1 group-hover:text-primary" />
-            </button>
-            <button
-              onClick={() => handleConnect("bea-cukai")}
-              className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 text-left transition-smooth hover:border-success hover:shadow-glow"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-success/10 text-success">
-                <Anchor className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <div className="font-semibold text-foreground">Bea Cukai</div>
-                <div className="text-sm text-muted-foreground">Verify and sign customs clearance on-chain.</div>
-              </div>
-              <ChevronDown className="h-4 w-4 -rotate-90 text-muted-foreground transition-smooth group-hover:translate-x-1 group-hover:text-success" />
-            </button>
-            <button
-              onClick={() => handleConnect("customer")}
-              className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 text-left transition-smooth hover:border-primary hover:shadow-glow"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <User className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <div className="font-semibold text-foreground">Customer</div>
-                <div className="text-sm text-muted-foreground">Track your shipments and view on-chain proofs.</div>
-              </div>
-              <ChevronDown className="h-4 w-4 -rotate-90 text-muted-foreground transition-smooth group-hover:translate-x-1 group-hover:text-primary" />
-            </button>
-          </div>
-          <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            Powered by Solana · Phantom-compatible
-          </p>
-        </DialogContent>
-      </Dialog>
-    </>
+    </div>
   );
 }

@@ -10,7 +10,7 @@ export function ProtectedRoute({
   allow: Exclude<Role, null>;
 }) {
   const { connected, role } = useWallet();
-  if (!connected) return <Navigate to="/" replace />;
-  if (role !== allow) return <Navigate to="/" replace />;
+  if (!connected) return <Navigate to="/auth" replace />;
+  if (role !== allow) return <Navigate to="/auth" replace />;
   return <>{children}</>;
 }
