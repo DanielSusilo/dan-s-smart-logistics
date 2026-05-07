@@ -103,14 +103,43 @@ const Index = () => {
               </div>
               <Input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Enter Item ID — try DSL-8829"
+                onChange={(e) => { setQuery(e.target.value); setShowSuggest(true); }}
+                onFocus={() => setShowSuggest(true)}
+                onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
+                placeholder="Cari ID, nama item, supplier, atau pelabuhan…"
                 className="h-11 flex-1 border-0 bg-transparent px-0 font-mono text-base shadow-none focus-visible:ring-0"
               />
               <Button type="submit" className="h-11 gap-2 bg-gradient-primary px-5 shadow-glow">
                 Track
                 <ArrowRight className="h-4 w-4" />
               </Button>
+              {showSuggest && suggestions.length > 0 && (
+                <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-2xl border border-border bg-popover shadow-elegant">
+                  {suggestions.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => select(s.id)}
+                      className="flex w-full items-start gap-3 border-b border-border px-4 py-3 text-left transition-smooth hover:bg-muted/50 last:border-b-0"
+                    >
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <Package className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs font-semibold text-primary">{s.id}</span>
+                          <StatusBadge variant={s.status === "Completed" ? "success" : s.status === "Pending" ? "warning" : "info"}>{s.status}</StatusBadge>
+                        </div>
+                        <div className="mt-0.5 truncate text-sm font-medium text-foreground">{s.itemName}</div>
+                        <div className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+                          <MapPin className="h-3 w-3" /> {s.origin.split(",")[0]} → {s.destination.split(",")[0]}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </form>
             <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
               <span>Sample IDs:</span>
