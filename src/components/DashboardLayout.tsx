@@ -100,10 +100,10 @@ export function DashboardLayout({
                   <Anchor className="h-3.5 w-3.5 text-primary-foreground" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-mono text-[11px] text-sidebar-foreground">
+                  <div className="truncate font-mono text-[11px] text-sidebar-foreground/90">
                     {address}
                   </div>
-                  <div className="text-[10px] text-muted-foreground">
+                  <div className="text-[10px] text-sidebar-foreground/60">
                     {variant === "admin" ? "Admin" : "Bea Cukai"}
                   </div>
                 </div>
