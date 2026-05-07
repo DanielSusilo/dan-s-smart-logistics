@@ -27,6 +27,7 @@ import { BrandLogo } from "./BrandLogo";
 import { useWallet } from "@/context/WalletContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { NotificationBell } from "./NotificationBell";
 
 const adminNav = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard, end: true },
