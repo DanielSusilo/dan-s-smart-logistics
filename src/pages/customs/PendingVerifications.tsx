@@ -31,11 +31,29 @@ export default function PendingVerifications() {
     setSigning(true);
     await new Promise((r) => setTimeout(r, 1300));
     approveCustoms(active.id);
+    // Notify Admin: signed berkas diteruskan
+    push({
+      type: "info",
+      title: "Berkas customs diterima",
+      message: `${active.id} — ${active.itemName} telah ditandatangani Bea Cukai. Berkas diteruskan ke Admin untuk distribusi.`,
+      shipmentId: active.id,
+      targetRoles: ["admin"],
+    });
+    // Notify Customer: barang ACC & siap dikirim
     push({
       type: "success",
-      title: "Customs cleared",
-      message: `${active.id} — ${active.itemName} berhasil ditandatangani Bea Cukai.`,
+      title: "Barang Anda di-ACC ✓ Siap dikirim",
+      message: `${active.id} — ${active.itemName} telah lolos Bea Cukai dan siap dikirim ke alamat tujuan.`,
       shipmentId: active.id,
+      targetRoles: ["customer"],
+    });
+    // Confirmation toast for the bea-cukai officer
+    push({
+      type: "success",
+      title: "Tanda tangan tercatat on-chain",
+      message: `${active.id} berhasil di-clearance.`,
+      shipmentId: active.id,
+      targetRoles: ["bea-cukai"],
     });
     setSigning(false);
     setActive(null);
@@ -47,9 +65,10 @@ export default function PendingVerifications() {
     rejectCustoms(active.id);
     push({
       type: "error",
-      title: "Shipment ditolak",
-      message: `${active.id} ditolak oleh Bea Cukai dan dikembalikan ke antrian.`,
+      title: "Shipment ditolak Bea Cukai",
+      message: `${active.id} ditolak. Mohon periksa kembali dokumen.`,
       shipmentId: active.id,
+      targetRoles: ["admin", "customer"],
     });
     setActive(null);
     toast.error("Shipment rejected");
