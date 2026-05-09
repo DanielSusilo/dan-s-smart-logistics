@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import ManageShipments from "./pages/admin/ManageShipments.tsx";
 import UserRegistry from "./pages/admin/UserRegistry.tsx";
+import Transactions from "./pages/admin/Transactions.tsx";
 import PendingVerifications from "./pages/customs/PendingVerifications.tsx";
 import ClearedGoods from "./pages/customs/ClearedGoods.tsx";
 import CustomerPortal from "./pages/customer/CustomerPortal.tsx";
@@ -36,6 +37,7 @@ const App = () => (
               <Route path="/admin" element={<ProtectedRoute allow="admin"><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/shipments" element={<ProtectedRoute allow="admin"><ManageShipments /></ProtectedRoute>} />
               <Route path="/admin/registry" element={<ProtectedRoute allow="admin"><UserRegistry /></ProtectedRoute>} />
+              <Route path="/admin/transactions" element={<ProtectedRoute allow="admin"><Transactions /></ProtectedRoute>} />
               <Route path="/customs" element={<ProtectedRoute allow="bea-cukai"><PendingVerifications /></ProtectedRoute>} />
               <Route path="/customs/cleared" element={<ProtectedRoute allow="bea-cukai"><ClearedGoods /></ProtectedRoute>} />
               <Route path="/customer" element={<ProtectedRoute allow="customer"><CustomerPortal /></ProtectedRoute>} />
