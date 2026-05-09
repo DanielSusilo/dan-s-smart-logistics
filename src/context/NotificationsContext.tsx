@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, ReactNode, useCallback, useMemo } from "react";
+import { useAuth, AuthRole } from "./AuthContext";
 
 export interface Notification {
   id: string;
@@ -6,6 +7,7 @@ export interface Notification {
   message: string;
   type: "info" | "success" | "warning" | "error";
   shipmentId?: string;
+  targetRoles?: AuthRole[];
   read: boolean;
   createdAt: number;
 }
@@ -43,6 +45,7 @@ const SEED: Notification[] = [
 
 export function NotificationsProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>(SEED);
+  const { user } = useAuth();
 
   const push: NotificationsState["push"] = useCallback((n) => {
     setNotifications((prev) => [
@@ -55,10 +58,17 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   const clear = () => setNotifications([]);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const visible = useMemo(
+    () =>
+      notifications.filter(
+        (n) => !n.targetRoles || (user && n.targetRoles.includes(user.role)),
+      ),
+    [notifications, user],
+  );
+  const unreadCount = visible.filter((n) => !n.read).length;
 
   return (
-    <Ctx.Provider value={{ notifications, unreadCount, push, markAllRead, clear }}>
+    <Ctx.Provider value={{ notifications: visible, unreadCount, push, markAllRead, clear }}>
       {children}
     </Ctx.Provider>
   );

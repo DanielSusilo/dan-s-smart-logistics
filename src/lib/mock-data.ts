@@ -26,6 +26,19 @@ export interface TimelineEvent {
   completed: boolean;
 }
 
+export type PaymentStatus = "Unpaid" | "Paid" | "Refunded";
+
+export interface Transaction {
+  id: string;
+  shipmentId: string;
+  amount: number;
+  method: "Wallet" | "Bank Transfer" | "QRIS";
+  status: "Success" | "Pending" | "Failed";
+  txHash: string;
+  createdAt: string;
+  payer: string;
+}
+
 export interface Shipment {
   id: string;
   itemName: string;
@@ -38,6 +51,10 @@ export interface Shipment {
   weightKg: number;
   hsCode: string;
   timeline: TimelineEvent[];
+  amount: number;
+  paymentStatus: PaymentStatus;
+  resi: string | null;
+  customerEmail?: string;
 }
 
 const tx = (seed: string) =>
@@ -47,6 +64,8 @@ const tx = (seed: string) =>
     .join("")
     .padEnd(40, "a4f9c2b1e8d7")
     .slice(0, 40);
+
+const baseAmount = (kg: number) => Math.round(kg * 4500 + 750000);
 
 export const SHIPMENTS: Shipment[] = [
   {
@@ -60,6 +79,10 @@ export const SHIPMENTS: Shipment[] = [
     createdAt: "2026-04-14",
     weightKg: 12500,
     hsCode: "0901.21.00",
+    amount: baseAmount(12500),
+    paymentStatus: "Paid",
+    resi: "SLA-RX-8829-2026",
+    customerEmail: "customer@cipta.co.id",
     timeline: [
       { stage: "Ordered", timestamp: "2026-04-14 08:12", location: "Semarang HQ", txHash: tx("ord8829"), signedBy: "PT Cipta Logistik", completed: true },
       { stage: "Raw Material", timestamp: "2026-04-16 14:30", location: "Gudang Ungaran", txHash: tx("raw8829"), signedBy: "Supplier Node", completed: true },
@@ -80,6 +103,10 @@ export const SHIPMENTS: Shipment[] = [
     createdAt: "2026-04-22",
     weightKg: 850,
     hsCode: "8542.31.00",
+    amount: baseAmount(850),
+    paymentStatus: "Paid",
+    resi: null,
+    customerEmail: "customer@cipta.co.id",
     timeline: [
       { stage: "Ordered", timestamp: "2026-04-22 10:00", location: "Jakarta HQ", txHash: tx("ord8830"), signedBy: "PT Mitra Elektronik", completed: true },
       { stage: "Raw Material", timestamp: "2026-04-23 12:00", location: "Shenzhen → Tanjung Priok", txHash: tx("raw8830"), signedBy: "Import Node", completed: true },
@@ -100,6 +127,10 @@ export const SHIPMENTS: Shipment[] = [
     createdAt: "2026-04-25",
     weightKg: 2200,
     hsCode: "5208.52.00",
+    amount: baseAmount(2200),
+    paymentStatus: "Unpaid",
+    resi: null,
+    customerEmail: "customer@cipta.co.id",
     timeline: [
       { stage: "Ordered", timestamp: "2026-04-25 09:00", location: "Pekalongan", txHash: tx("ord8831"), signedBy: "Koperasi Batik", completed: true },
       { stage: "Raw Material", timestamp: "2026-04-26 08:00", location: "Workshop Pekalongan", txHash: tx("raw8831"), signedBy: "Supplier Node", completed: true },
@@ -120,6 +151,10 @@ export const SHIPMENTS: Shipment[] = [
     createdAt: "2026-03-30",
     weightKg: 48000,
     hsCode: "1511.10.00",
+    amount: baseAmount(48000),
+    paymentStatus: "Paid",
+    resi: "SLA-RX-8832-2026",
+    customerEmail: "customer@cipta.co.id",
     timeline: STAGES.map((s, i) => ({
       stage: s,
       timestamp: `2026-04-${String(2 + i * 3).padStart(2, "0")} 10:00`,
@@ -140,6 +175,10 @@ export const SHIPMENTS: Shipment[] = [
     createdAt: "2026-04-27",
     weightKg: 1800,
     hsCode: "9401.51.00",
+    amount: baseAmount(1800),
+    paymentStatus: "Unpaid",
+    resi: null,
+    customerEmail: "customer@cipta.co.id",
     timeline: [
       { stage: "Ordered", timestamp: "2026-04-27 11:00", location: "Cirebon", txHash: tx("ord8833"), signedBy: "CV Rotan Indah", completed: true },
       { stage: "Raw Material", timestamp: "2026-04-28 09:00", location: "Workshop Cirebon", txHash: tx("raw8833"), signedBy: "Supplier Node", completed: true },
@@ -148,6 +187,39 @@ export const SHIPMENTS: Shipment[] = [
       { stage: "Distribution", timestamp: "—", location: "Pending", txHash: "", signedBy: "—", completed: false },
       { stage: "Retail", timestamp: "—", location: "Pending", txHash: "", signedBy: "—", completed: false },
     ],
+  },
+];
+
+export const TRANSACTIONS_SEED: Transaction[] = [
+  {
+    id: "TRX-20260414-001",
+    shipmentId: "DSL-8829",
+    amount: baseAmount(12500),
+    method: "Wallet",
+    status: "Success",
+    txHash: tx("trx8829"),
+    createdAt: "2026-04-14 08:30",
+    payer: "PT Cipta Logistik Nusantara",
+  },
+  {
+    id: "TRX-20260422-002",
+    shipmentId: "DSL-8830",
+    amount: baseAmount(850),
+    method: "Bank Transfer",
+    status: "Success",
+    txHash: tx("trx8830"),
+    createdAt: "2026-04-22 11:14",
+    payer: "PT Mitra Elektronik Jaya",
+  },
+  {
+    id: "TRX-20260330-003",
+    shipmentId: "DSL-8832",
+    amount: baseAmount(48000),
+    method: "Wallet",
+    status: "Success",
+    txHash: tx("trx8832"),
+    createdAt: "2026-03-30 09:02",
+    payer: "PT Sawit Makmur Sejahtera",
   },
 ];
 

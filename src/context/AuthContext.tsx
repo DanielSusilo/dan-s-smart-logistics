@@ -8,6 +8,7 @@ export interface AuthUser {
   name: string;
   role: AuthRole;
   company?: string;
+  employeeId?: string;
   walletAddress: string;
   createdAt: string;
 }
@@ -26,9 +27,14 @@ interface AuthState {
     name: string;
     role: AuthRole;
     company?: string;
+    employeeId?: string;
   }) => Promise<AuthUser>;
   logout: () => void;
 }
+
+// Whitelist Nomor Induk Pekerja — only holders can register as admin / bea-cukai
+export const VALID_ADMIN_NIP = ["ADM-001", "ADM-002", "ADM-2026"];
+export const VALID_BEA_NIP = ["BC-001", "BC-2026", "BC-SMG-12"];
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
@@ -53,6 +59,7 @@ const seed = (): StoredUser[] => [
     name: "Admin Operasional",
     role: "admin",
     company: "Dan.s Logistic HQ",
+    employeeId: "ADM-001",
     walletAddress: "DnsLADMIN42...kx9p",
     createdAt: "2026-01-10",
   },
@@ -63,6 +70,7 @@ const seed = (): StoredUser[] => [
     name: "Officer Bea Cukai",
     role: "bea-cukai",
     company: "Bea Cukai Semarang",
+    employeeId: "BC-001",
     walletAddress: "DnsLBEACUK1...m4qr",
     createdAt: "2026-01-12",
   },
@@ -129,6 +137,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (storedUsers.some((u) => u.email.toLowerCase() === data.email.toLowerCase())) {
       throw new Error("Email sudah terdaftar.");
     }
+    if (data.role === "admin") {
+      if (!data.employeeId || !VALID_ADMIN_NIP.includes(data.employeeId.toUpperCase())) {
+        throw new Error("Nomor Induk Pekerja Admin tidak valid. Hubungi HR.");
+      }
+    }
+    if (data.role === "bea-cukai") {
+      if (!data.employeeId || !VALID_BEA_NIP.includes(data.employeeId.toUpperCase())) {
+        throw new Error("NIP Bea Cukai tidak valid. Hubungi pejabat verifikasi.");
+      }
+    }
     const newUser: StoredUser = {
       id: `u-${Date.now()}`,
       email: data.email,
@@ -136,6 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       name: data.name,
       role: data.role,
       company: data.company,
+      employeeId: data.employeeId?.toUpperCase(),
       walletAddress: mockAddress(),
       createdAt: new Date().toISOString().slice(0, 10),
     };

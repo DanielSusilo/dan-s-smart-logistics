@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   LogOut,
   Anchor,
+  Receipt,
 } from "lucide-react";
 import {
   Sidebar,
@@ -32,6 +33,7 @@ import { NotificationBell } from "./NotificationBell";
 const adminNav = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard, end: true },
   { title: "Manage Shipments", url: "/admin/shipments", icon: Package },
+  { title: "Transaksi & Resi", url: "/admin/transactions", icon: Receipt },
   { title: "User Registry", url: "/admin/registry", icon: Users },
 ];
 
