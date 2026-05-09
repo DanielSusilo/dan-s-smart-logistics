@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Shield, Anchor, User, Loader2, ArrowLeft, Mail, Lock, Building2, UserCircle2 } from "lucide-react";
+import { Shield, Anchor, User, Loader2, ArrowLeft, Mail, Lock, Building2, UserCircle2, IdCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,6 +40,7 @@ export default function Auth() {
   const [rEmail, setREmail] = useState("");
   const [rPass, setRPass] = useState("");
   const [rPass2, setRPass2] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +62,7 @@ export default function Auth() {
     if (rPass !== rPass2) return toast.error("Konfirmasi password tidak cocok.");
     setLoading(true);
     try {
-      const u = await register({ email: rEmail, password: rPass, name, role, company });
+      const u = await register({ email: rEmail, password: rPass, name, role, company, employeeId });
       toast.success(`Akun ${roleMeta[u.role].label} dibuat`, { description: "Wallet on-chain ter-generate." });
       navigate(routeFor(u.role));
     } catch (err) {
@@ -96,7 +97,7 @@ export default function Auth() {
           <div className="hidden flex-col justify-center lg:flex">
             <span className="font-mono text-[10px] uppercase tracking-widest text-success">Secured by Solana</span>
             <h1 className="mt-3 font-display text-4xl font-bold leading-tight tracking-tight">
-              Masuk ke jaringan logistik <span className="bg-gradient-to-r from-primary via-primary-glow to-success bg-clip-text text-transparent">on-chain</span> Indonesia.
+              Masuk ke jaringan <span className="bg-gradient-to-r from-primary via-primary-glow to-success bg-clip-text text-transparent">Sea Logistic Ancor</span> Indonesia.
             </h1>
             <p className="mt-4 max-w-md text-muted-foreground">
               Setiap akun otomatis mendapat wallet Solana untuk menandatangani pergerakan barang dari pelabuhan hingga gudang.
@@ -209,6 +210,29 @@ export default function Auth() {
                       </div>
                     </div>
                   </div>
+
+                  {(role === "admin" || role === "bea-cukai") && (
+                    <div className="space-y-1.5 rounded-xl border border-warning/40 bg-warning-soft/40 p-3">
+                      <Label htmlFor="r-nip" className="flex items-center gap-1.5">
+                        <IdCard className="h-3.5 w-3.5" />
+                        Nomor Induk Pekerja ({role === "admin" ? "Admin" : "Bea Cukai"})
+                      </Label>
+                      <Input
+                        id="r-nip"
+                        required
+                        value={employeeId}
+                        onChange={(e) => setEmployeeId(e.target.value)}
+                        placeholder={role === "admin" ? "ADM-001" : "BC-001"}
+                        className="font-mono uppercase"
+                      />
+                      <p className="text-[11px] text-muted-foreground">
+                        Hanya pekerja terdaftar yang dapat membuat akun ini. Demo:{" "}
+                        <span className="font-mono text-foreground">
+                          {role === "admin" ? "ADM-001 · ADM-002 · ADM-2026" : "BC-001 · BC-2026 · BC-SMG-12"}
+                        </span>
+                      </p>
+                    </div>
+                  )}
 
                   <div className="space-y-1.5">
                     <Label htmlFor="r-email">Email</Label>
